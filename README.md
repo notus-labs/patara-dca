@@ -11,13 +11,13 @@ Make sure you have the latest version of the Sui binaries installed on your mach
 ### Run tests
 
 ```bash
-  sui move test --gas-limit 5000000000
+  sui move test
 ```
 
 ### Publish
 
 ```bash
-  sui client publish --gas-budget 500000000
+  sui client publish
 ```
 
 ## Repo Structure
@@ -38,5 +38,5 @@ The Patara DCA module makes you swap between Input and to the Output coins, whil
 ## Contact Us
 
 - Twitter: [@PataraApp](https://x.com/PataraApp)
-- Discord: [Discord]https://discord.gg/hWC2TmDSUv
+- Discord: [Discord](https://discord.gg/hWC2TmDSUv)
 - Email: [hello@notuslabs.org](mailto:hello@notuslabs.org)

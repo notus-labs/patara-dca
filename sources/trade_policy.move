@@ -61,9 +61,9 @@ module dca::trade_policy {
         };
 
         (request, dca.take(ctx))
-        }
+    }
 
-        public fun add<Witness: drop, Output>(request: &mut Request<Output>, _: Witness, output: Coin<Output>) {
+    public fun add<Witness: drop, Output>(request: &mut Request<Output>, _: Witness, output: Coin<Output>) {
         assert!(request.rule.is_none(), ERuleAlreadyAdded);
 
         request.rule = option::some(type_name::get<Witness>());

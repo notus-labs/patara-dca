@@ -134,11 +134,11 @@ module dca::dca {
 
         event::emit(
             Start<Input, Output> {
-            every,
-            time_scale,
-            input: dca.input_balance.value(),
-            dca_address: object::id_address(&dca),
-            delegatee
+                every,
+                time_scale,
+                input: dca.input_balance.value(),
+                dca_address: object::id_address(&dca),
+                delegatee
             }
         );
 
@@ -270,32 +270,32 @@ module dca::dca {
     public fun assert_every(every: u64, time_scale: u8) {
         // Depending on the time_scale the restrictions on `every` are different
         let is_ok = {
-            if (time_scale == 0) { // 0 => seconds
-            // Lower bound --> 30 seconds
-            // Upper bound --> 59 seconds
-            every >= 30 && every <= 59
-            } else if (time_scale == 1) { // 1 => minutes
-            // Lower bound --> 1 minute
-            // Upper bound --> 59 minutes
-            every >= 1 && every <= 59
-            } else if (time_scale == 2) { // 2 => hours
-            // Lower bound --> 1 hour
-            // Upper bound --> 24 hours
-            every >= 1 && every <= 24
-            } else if (time_scale == 3) { // 3 => days
-            // Lower bound --> 1 day
-            // Upper bound --> 6 days
-            every >= 1 && every <= 6
-            } else if (time_scale == 4) { // 4 => weeks
-            // Lower bound --> 1 week
-            // Upper bound --> 4 weeks
-            every >= 1 && every <= 4
-            } else if (time_scale == 5) { // 5 => months
-            // Lower bound --> 1 month
-            // Upper bound --> 12 months
-            every >= 1 && every <= 12
+            if (time_scale == 0) {  // 0 => seconds
+                // Lower bound --> 30 seconds
+                // Upper bound --> 59 seconds
+                every >= 30 && every <= 59
+            } else if (time_scale == 1) {   // 1 => minutes
+                // Lower bound --> 1 minute
+                // Upper bound --> 59 minutes
+                every >= 1 && every <= 59
+            } else if (time_scale == 2) {   // 2 => hours
+                // Lower bound --> 1 hour
+                // Upper bound --> 24 hours
+                every >= 1 && every <= 24
+            } else if (time_scale == 3) {   // 3 => days
+                // Lower bound --> 1 day
+                // Upper bound --> 6 days
+                every >= 1 && every <= 6
+            } else if (time_scale == 4) {   // 4 => weeks
+                // Lower bound --> 1 week
+                // Upper bound --> 4 weeks
+                every >= 1 && every <= 4
+            } else if (time_scale == 5) {   // 5 => months
+                // Lower bound --> 1 month
+                // Upper bound --> 12 months
+                every >= 1 && every <= 12
             } else {
-            abort EInvalidTimeScale
+                abort EInvalidTimeScale
             }
         };
 
@@ -326,16 +326,16 @@ module dca::dca {
         if (self.remaining_orders == 0 || self.input_balance.value() == 0)
             self.active = false;
 
-        let mut balance_out = coin::into_balance(coin_out);  
+        let mut balance_out = coin_out.into_balance();  
 
         let balance_fee = balance_out.split(math64::mul_div_up(output_value, self.fee_percent, PRECISION));
 
         event::emit(
             Resolve<Input, Output> {
-            fee: balance_fee.value(),
-            input: self.amount_per_trade,
-            output: output_value,
-            dca_address: object::id_address(self)
+                fee: balance_fee.value(),
+                input: self.amount_per_trade,
+                output: output_value,
+                dca_address: object::id_address(self)
             }
         );
 
@@ -364,9 +364,9 @@ module dca::dca {
         if (time_scale == 5) return MONTH;
 
         abort EInvalidTimestamp
-        }
+    }
 
-        fun timestamp_s(clock: &Clock): u64 {
+    fun timestamp_s(clock: &Clock): u64 {
         clock.timestamp_ms() / 1000
     }
 }

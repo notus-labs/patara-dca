@@ -28,14 +28,14 @@ module dca::deepbook_adapter {
         let quantity = base_coin.value();
 
         let (base_out, quote_out) = pool.place_market_order<Base, Quote>(
-        account_cap, 
-        client_order_id, 
-        quantity,
-        false,
-        base_coin,
-        coin::zero(ctx),
-        clock,
-        ctx
+            account_cap, 
+            client_order_id, 
+            quantity,
+            false,
+            base_coin,
+            coin::zero(ctx),
+            clock,
+            ctx
         );
 
         resolve(request, base_out, quote_out);
@@ -53,14 +53,14 @@ module dca::deepbook_adapter {
         let quantity = quote_coin.value();
 
         let (base_out, quote_out) = pool.place_market_order<Base, Quote>(
-        account_cap, 
-        client_order_id, 
-        quantity,
-        true,
-        coin::zero(ctx),
-        quote_coin,
-        clock,
-        ctx
+            account_cap, 
+            client_order_id, 
+            quantity,
+            true,
+            coin::zero(ctx),
+            quote_coin,
+            clock,
+            ctx
         );
 
         resolve(request, quote_out, base_out);

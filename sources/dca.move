@@ -1,6 +1,8 @@
 module dca::dca {
     // === Imports ===
 
+    use sui::table::{Self, Table};
+    use sui::table_vec::{Self, TableVec};
     use sui::event;
     use sui::coin::{Coin, Self};
     use sui::clock::{Clock};
@@ -32,6 +34,11 @@ module dca::dca {
     const PRECISION: u64 = 1000000000;
 
     // === Structs ===
+
+    public struct DCARegistry has key, store {
+        id: UID,
+        registry: Table<address, TableVec<ID>>
+    }
 
     public struct DCA<phantom Input, phantom Output> has key {
         id: UID,
@@ -93,8 +100,18 @@ module dca::dca {
 
     // === Public-Mutative Functions ===
 
+    fun init(ctx: &mut TxContext) {
+        let registry = DCARegistry {
+            id: object::new(ctx),
+            registry: table::new(ctx)
+        };
+
+        share_object(registry);
+    }
+
     public fun new<Input, Output>(
         clock: &Clock,
+        registry: &mut DCARegistry,
         coin_in: Coin<Input>,
         every: u64,
         number_of_orders: u64,
@@ -142,6 +159,12 @@ module dca::dca {
             }
         );
 
+        if (registry.registry.contains(ctx.sender())) {
+            registry.registry.borrow_mut(ctx.sender()).push_back(object::id(&dca));
+        } else {
+            registry.registry.add(ctx.sender(), table_vec::singleton(object::id(&dca), ctx));
+        };
+
         dca
     }
 
@@ -155,7 +178,8 @@ module dca::dca {
         self.active = false;
     }
 
-    public fun destroy<Input, Output>(self: DCA<Input, Output>, ctx: &mut TxContext) {
+    public fun destroy<Input, Output>(self: DCA<Input, Output>, registry: &mut DCARegistry, ctx: &mut TxContext) {
+        let id_obj = object::id(&self);
         let DCA { 
             id,
             owner,
@@ -197,6 +221,12 @@ module dca::dca {
             input_balance.destroy_zero()
         else 
             public_transfer(coin::from_balance(input_balance, ctx), owner);
+
+        let table_vec = registry.registry.borrow_mut(owner);
+
+        let idx = get_idx_opt_table_vec(table_vec, &id_obj);
+
+        table_vec.swap_remove(idx.extract());
 
         object::delete(id);
     }
@@ -368,5 +398,26 @@ module dca::dca {
 
     fun timestamp_s(clock: &Clock): u64 {
         clock.timestamp_ms() / 1000
+    }
+
+    // == Helper functions ==
+
+    fun get_idx_opt_table_vec(self: &TableVec<ID>, element: &ID): Option<u64> {
+        let mut i = 0;
+        let n = self.length();
+        while (i < n) {
+            if (self.borrow(i) == element) {
+                return option::some(i)
+            };
+            i = i + 1;
+        };
+        option::none()
+    }
+
+    // === Test Functions ===
+
+    #[test_only]
+    public fun init_for_testing(ctx: &mut TxContext) {
+        init(ctx);
     }
 }

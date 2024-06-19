@@ -23,7 +23,6 @@ Make sure you have the latest version of the Sui binaries installed on your mach
 ## Repo Structure
 
 - **sources:** DCA module
-- **tests:** DCA module tests
 
 ## Integration
 

@@ -24,10 +24,6 @@ Make sure you have the latest version of the Sui binaries installed on your mach
 
 - **sources:** DCA module
 
-## Integration
-
-Please check the available testnet and mainnet branches in this repo for further instructions.
-
 ## Functionality
 
 ### DCA

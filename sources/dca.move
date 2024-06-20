@@ -224,7 +224,7 @@ module dca::dca {
 
         let table_vec = registry.registry.borrow_mut(owner);
 
-        let idx = get_idx_opt_table_vec(table_vec, &id_obj);
+        let mut idx = get_idx_opt_table_vec(table_vec, &id_obj);
 
         table_vec.swap_remove(idx.extract());
 
